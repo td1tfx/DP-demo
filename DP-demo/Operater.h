@@ -7,6 +7,6 @@ public:
 
 	typedef float functype(float);
 
-	float gradientDescent(float x_start, float step, functype f, functype g, int epoch, float acc);
+	float gradientDescent(float x_start, float step, functype f, functype g, int epoch, float acc, float mom_dis);
 };
 
