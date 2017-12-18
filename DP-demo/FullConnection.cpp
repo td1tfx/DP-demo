@@ -42,9 +42,9 @@ FullConnection::~FullConnection()
 		delete[m_out_num] b;
 		b = NULL;
 	}
-	if (m_out_data != NULL) {
-		delete[m_out_num] m_out_data;
-	}
+// 	if (m_out_data != NULL) {
+// 		delete[m_out_num] m_out_data;
+// 	}
 }
 
 float* FullConnection::__sigmoid(float* in_data_t) {

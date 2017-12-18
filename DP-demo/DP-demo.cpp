@@ -27,11 +27,16 @@ int main()
 	float* out_data;
 	FullConnection fc(in_num,out_num);
 	out_data = fc.forward(in_data);
+	FullConnection fc1(out_num, out_num);
+	out_data = fc1.forward(out_data);
+	FullConnection fc2(out_num, out_num);
+	out_data = fc2.forward(out_data);
 	std::cout << "output:" << std::endl;
 	for (int i = 0; i < out_num; i++) {
 		std::cout << out_data[i] << " ";
 	}
 	std::cout << std::endl;
+	delete in_data;
 
 	system("pause");
     return 0;
