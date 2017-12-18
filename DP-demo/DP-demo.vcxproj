@@ -145,6 +145,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="FullConnection.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="Operater.h" />
     <ClInclude Include="stdafx.h" />
@@ -152,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DP-demo.cpp" />
+    <ClCompile Include="FullConnection.cpp" />
     <ClCompile Include="Function.cpp" />
     <ClCompile Include="Operater.cpp" />
     <ClCompile Include="stdafx.cpp">
