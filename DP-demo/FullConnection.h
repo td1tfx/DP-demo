@@ -7,7 +7,11 @@ private:
 	float* m_in_data;
 	float* m_out_data;
 	float** w;
+	float** m_grad_w;
 	float* b;
+	float* m_grad_b;
+	float* m_residual_z;
+	float* m_residual_x;
 
 	float* __sigmoid(float* in_data_t);
 
@@ -17,5 +21,6 @@ public:
 	~FullConnection();
 
 	float* forward(float* in_data_t);
+	float* backward(float* loss_t);
 };
 
