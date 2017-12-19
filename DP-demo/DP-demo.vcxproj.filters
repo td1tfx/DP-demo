@@ -33,6 +33,9 @@
     <ClInclude Include="FullConnection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SquareLoss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -48,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FullConnection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SquareLoss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
