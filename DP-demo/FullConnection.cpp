@@ -9,57 +9,57 @@ FullConnection::FullConnection()
 	FullConnection(3, 2, 3, 0.1);
 }
 
-FullConnection::FullConnection(int in_num_t, int out_num_t,int batch_num_t, float lr) {
+FullConnection::FullConnection(int in_num_t, int out_num_t,int batch_num_t, double lr) {
 	m_in_num = in_num_t;
 	m_out_num = out_num_t;
 	m_batch_num = batch_num_t;
 	m_lr = lr;
-	w = new float*[in_num_t];
+	w = new double*[in_num_t];
 	for (int i = 0; i < in_num_t; i++) {
-		w[i] = new float[out_num_t];
+		w[i] = new double[out_num_t];
 		for (int j = 0; j < out_num_t; j++) {
 			w[i][j] = rand() % 100 / 100.00;
 		}
 	}
-	b = new float[out_num_t];
+	b = new double[out_num_t];
 	for (int j = 0; j < out_num_t; j++) {
 		b[j] = 0;
 	}
 
-	m_in_data = new float*[m_batch_num];
+	m_in_data = new double*[m_batch_num];
 	for (int i = 0; i < m_batch_num; i++) {
-		m_in_data[i] = new float[m_in_num];
+		m_in_data[i] = new double[m_in_num];
 		for (int j = 0; j < m_in_num; j++) {
 			m_in_data[i][j] = 0;
 		}
 	}
-	m_out_data = new float*[m_batch_num];
+	m_out_data = new double*[m_batch_num];
 	for (int i = 0; i < m_batch_num; i++) {
-		m_out_data[i] = new float[m_out_num];
+		m_out_data[i] = new double[m_out_num];
 		for (int j = 0; j < m_out_num; j++) {
 			m_out_data[i][j] = 0;
 		}
 	}
-	m_residual_z = new float*[m_batch_num];
+	m_residual_z = new double*[m_batch_num];
 	for (int i = 0; i < m_batch_num; i++) {
-		m_residual_z[i] = new float[m_out_num];
+		m_residual_z[i] = new double[m_out_num];
 		for (int j = 0; j < m_out_num; j++) {
 			m_residual_z[i][j] = 0;
 		}
 	}
 
-	m_residual_x = new float*[m_batch_num];
+	m_residual_x = new double*[m_batch_num];
 	for (int i = 0; i < m_batch_num; i++) {
-		m_residual_x[i] = new float[m_in_num];
+		m_residual_x[i] = new double[m_in_num];
 		for (int j = 0; j < m_in_num; j++) {
 			m_residual_x[i][j] = 0;
 		}
 	}
 
-	m_grad_b = new float[m_out_num] {0};
-	m_grad_w = new float*[in_num_t];
+	m_grad_b = new double[m_out_num] {0};
+	m_grad_w = new double*[in_num_t];
 	for (int i = 0; i < in_num_t; i++) {
-		m_grad_w[i] = new float[out_num_t];
+		m_grad_w[i] = new double[out_num_t];
 		for (int j = 0; j < out_num_t; j++) {
 			m_grad_w[i][j] = 0;
 		}
@@ -114,7 +114,7 @@ FullConnection::~FullConnection()
 // 	}
 }
 
-float** FullConnection::__sigmoid(float** in_data_t) {
+double** FullConnection::__sigmoid(double** in_data_t) {
 	for (int i = 0; i < m_batch_num; i++) {
 		for(int j = 0; j<m_out_num;j++)
 		in_data_t[i][j] = 1 / (1 + exp(-in_data_t[i][j]));
@@ -122,12 +122,12 @@ float** FullConnection::__sigmoid(float** in_data_t) {
 	return in_data_t;
 }
 
-float** FullConnection::forward(float** in_data_t) {
-	memcpy(m_in_data, in_data_t, m_in_num * m_batch_num * sizeof(float));
+double** FullConnection::forward(double** in_data_t) {
+	memcpy(m_in_data, in_data_t, m_in_num * m_batch_num * sizeof(double));
 	for (int i = 0; i < m_batch_num; i++) {
 		for (int j = 0; j < m_out_num; j++) {
-			//float test = w[j][i];
-			//float test1 = w[j][i] * in_data_t[j];
+			//double test = w[j][i];
+			//double test1 = w[j][i] * in_data_t[j];
 			for (int h = 0; h < m_in_num; h++) {
 				for (int f = 0; f < m_out_num; f++) {
 					m_out_data[i][j] = m_out_data[i][j] += w[h][f] * in_data_t[i][h];
@@ -140,7 +140,7 @@ float** FullConnection::forward(float** in_data_t) {
 	return m_out_data;
 }
 
-float** FullConnection::backward(float* loss_t) {
+double** FullConnection::backward(double* loss_t) {
 	for (int i = 0; i < m_batch_num; i++) {
 		for (int j = 0; j < m_out_num; j++) {
 			m_residual_z[i][j] = loss_t[j] * m_out_data[i][j] * (1 - m_out_data[i][j]);

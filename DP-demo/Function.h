@@ -13,8 +13,8 @@ public:
 		return instance;
 	}
 	
-	static float func1(float x);
-	static float grad1(float x);
+	static double func1(double x);
+	static double grad1(double x);
 
 };
 

@@ -13,24 +13,29 @@ SquareLoss::~SquareLoss()
 
 }
 
-float* SquareLoss::forward(float** y, float** t, int out_num, int batch_num_t) {
+double SquareLoss::forward(double** y, double** t, int out_num, int batch_num_t) {
 
 	if (loss != NULL) {
 		delete[] loss;
 	}
 	batch_num = batch_num_t;
-	loss = new float[batch_num] {0};
+	loss = new double*[batch_num];
 	for (int i = 0; i < batch_num; i++) {
-		float loss_t = 0;
+		loss[i] = new double[out_num];
 		for (int j = 0; j < out_num; j++) {
-			loss_t += (y[i][j] - t[i][j]) * (y[i][j] - t[i][j]);
+			loss[i][j] = y[i][j] - t[i][j];
 		}
-		loss[i] = loss_t / out_num / 2;
 	}
-	return loss;
+	double loss_t = 0;
+	for (int i = 0; i < batch_num; i++) {
+		for (int j = 0; j < out_num; j++) {
+			loss_t += (y[i][j] - t[i][j]) * (y[i][j] - t[i][j]); 
+		}
+	}
+	return loss_t/ out_num / batch_num/2;
 }
 
-float* SquareLoss::backward() {
+double** SquareLoss::backward() {
 
 	return loss;
 

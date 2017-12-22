@@ -5,8 +5,8 @@ public:
 	Operater();
 	~Operater();
 
-	typedef float functype(float);
+	typedef double functype(double);
 
-	float gradientDescent(float x_start, float step, functype f, functype g, int epoch, float acc, float mom_dis);
+	double gradientDescent(double x_start, double step, functype f, functype g, int epoch, double acc, double mom_dis);
 };
 

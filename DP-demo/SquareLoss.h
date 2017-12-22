@@ -2,14 +2,14 @@
 class SquareLoss
 {
 public:
-	float* loss;
+	double** loss;
 	int batch_num;
 
 	SquareLoss();
 	~SquareLoss();
 	
-	float* forward(float** y, float** t, int out_num, int batch_num_t);
-	float* backward();
+	double forward(double** y, double** t, int out_num, int batch_num_t);
+	double** backward();
 
 };
 
