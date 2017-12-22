@@ -8,6 +8,7 @@
 #include "FullConnection.h"
 #include <iostream>
 #include "SquareLoss.h"
+#include <time.h>
 
 
 int main()
@@ -15,14 +16,15 @@ int main()
 	//gradient descent
 	//Operater op;
 	//op.gradientDescent(-5, 0.2, Function::func1, Function::grad1, 20, 0.0001,0.0);
+	srand((unsigned)time(NULL));
 
-	//forward
 	int in_num = 3;
 	int out_num = 2;
 	int batch_num = 3;
-	FullConnection fc(in_num, out_num, batch_num);
-	FullConnection fc1(out_num, out_num, batch_num);
-	FullConnection fc2(out_num, out_num, batch_num);
+	double lr = 0.1;
+	FullConnection fc(in_num, out_num, batch_num,lr);
+	FullConnection fc1(out_num, out_num, batch_num,lr);
+	FullConnection fc2(out_num, out_num, batch_num,lr);
 	double** in_data = new double*[batch_num];
 	in_data[0] = new double[in_num] {3, 5, 8};
 	in_data[1] = new double[in_num] {2, 4, 3};
@@ -52,7 +54,8 @@ int main()
 	int run_num = 0;
 	double** out_data;
 	double** loss_data;
-	while (mse >= 0.001 && run_num < 5) {
+	while (mse >= 0.001 && run_num < 100) {
+		//forward
 		out_data = fc.forward(in_data);
 		out_data = fc1.forward(out_data);
 		out_data = fc2.forward(out_data);
@@ -64,7 +67,7 @@ int main()
 			std::cout << ";";
 		}
 		std::cout << std::endl;
-
+		//backward
 		mse = loss.forward(out_data, bench_data, out_num, batch_num);
 		std::cout << "mse = " << mse << ";" << std::endl;
 		loss_data = loss.backward();

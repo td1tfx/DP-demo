@@ -160,21 +160,41 @@ double** FullConnection::forward(double** in_data_t) {
 }
 
 double** FullConnection::backward(double** loss_t) {
+	for (int j = 0; j < m_out_num; j++) {
+		m_grad_b[j] = 0;
+		for (int i = 0; i < m_batch_num; i++) {
+			m_residual_z[i][j] = loss_t[i][j] * m_out_data[i][j] * (1 - m_out_data[i][j]);
+			m_grad_b[j] += m_residual_z[i][j];
+		}
+	}
+	for (int i = 0; i < m_in_num; i++) {
+		for (int j = 0; j < m_out_num; j++) {
+			m_grad_w[i][j] = 0;
+		}
+	}
+	for (int i = 0; i < m_in_num; i++) {
+		for (int h = 0; h < m_out_num; h++) {
+			for (int j = 0; j < m_batch_num; j++) {
+				m_grad_w[i][h] += m_in_data[i][j] * m_residual_z[j][h];
+			}
+		}
+	}
+
+	for (int j = 0; j < m_out_num; j++) {
+		double test0 = b[j];
+		double test1 = b[j] -= m_lr*m_grad_b[j];
+		for (int h = 0; h < m_in_num; h++) {
+			w[h][j] -= m_lr*m_grad_w[h][j];
+		}
+	}
 	for (int i = 0; i < m_batch_num; i++) {
 		for (int j = 0; j < m_out_num; j++) {
-			double test0 = m_out_data[i][j];
-			double test1 = loss_t[i][j];
-			m_residual_z[i][j] = loss_t[i][j] * m_out_data[i][j] * (1 - m_out_data[i][j]);
-			m_grad_b[i] += m_residual_z[i][j];
 			for (int h = 0; h < m_in_num; h++) {
-				double test2 = m_in_data[h][i];
-				m_grad_w[h][j] = m_in_data[h][i] * m_residual_z[i][j];
-				double test3 = w[h][j] -= m_lr*m_grad_w[h][j];
 				m_residual_x[i][h] += m_residual_z[i][j] * w[h][j];
 			}
 		}
-		b[i] -= m_lr*m_grad_b[i];
 	}
+
 	return m_residual_x;
 
 }
