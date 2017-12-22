@@ -139,7 +139,10 @@ double** FullConnection::__sigmoid(double** in_data_t) {
 }
 
 double** FullConnection::forward(double** in_data_t) {
-	memcpy(m_in_data, in_data_t, m_in_num * m_batch_num * sizeof(double));
+	for (int i = 0; i < m_batch_num; i++) {
+		memcpy(m_in_data[i], in_data_t[i], m_in_num * sizeof(double));
+	}
+
 	for (int i = 0; i < m_batch_num; i++) {
 		for (int j = 0; j < m_out_num; j++) {
 			//double test = w[j][i];
