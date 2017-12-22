@@ -6,12 +6,13 @@
 
 FullConnection::FullConnection()
 {
-	FullConnection(3, 2);
+	FullConnection(3, 2, 3);
 }
 
-FullConnection::FullConnection(int in_num_t, int out_num_t, float lr) {
+FullConnection::FullConnection(int in_num_t, int out_num_t,int batch_num_t, float lr) {
 	m_in_num = in_num_t;
 	m_out_num = out_num_t;
+	m_batch_num = batch_num_t;
 	w = new float*[in_num_t];
 	for (int i = 0; i < in_num_t; i++) {
 		w[i] = new float[out_num_t];
@@ -24,10 +25,36 @@ FullConnection::FullConnection(int in_num_t, int out_num_t, float lr) {
 		b[j] = 0;
 	}
 
-	m_in_data = new float[m_in_num] {0};
-	m_out_data = new float[m_out_num] {0};
-	m_residual_z = new float[m_out_num] {0};
-	m_residual_x = new float[m_in_num] {0};
+	m_in_data = new float*[m_batch_num];
+	for (int i = 0; i < m_batch_num; i++) {
+		m_in_data[i] = new float[m_in_num];
+		for (int j = 0; j < m_in_num; j++) {
+			m_in_data[i][j] = 0;
+		}
+	}
+	m_out_data = new float*[m_batch_num];
+	for (int i = 0; i < m_batch_num; i++) {
+		m_out_data[i] = new float[m_out_num];
+		for (int j = 0; j < m_out_num; j++) {
+			m_out_data[i][j] = 0;
+		}
+	}
+	m_residual_z = new float*[m_batch_num];
+	for (int i = 0; i < m_batch_num; i++) {
+		m_residual_z[i] = new float[m_out_num];
+		for (int j = 0; j < m_out_num; j++) {
+			m_residual_z[i][j] = 0;
+		}
+	}
+
+	m_residual_x = new float*[m_batch_num];
+	for (int i = 0; i < m_batch_num; i++) {
+		m_residual_x[i] = new float[m_in_num];
+		for (int j = 0; j < m_in_num; j++) {
+			m_residual_x[i][j] = 0;
+		}
+	}
+
 	m_grad_b = new float[m_out_num] {0};
 	m_grad_w = new float*[in_num_t];
 	for (int i = 0; i < in_num_t; i++) {
@@ -66,50 +93,65 @@ FullConnection::~FullConnection()
 		m_grad_b = NULL;
 	}
 	if (m_in_data != NULL) {
+		for (int i = 0; i < m_batch_num; i++) {
+			delete m_in_data[i];
+			m_in_data[i] = NULL;
+		}
 		delete[m_in_num] m_in_data;
+		m_in_data = NULL;
 	}
 	if (m_residual_z != NULL) {
-		delete[m_out_num] m_residual_z;
+		for (int i = 0; i < m_batch_num; i++) {
+			delete m_residual_z[i];
+			m_residual_z[i] = NULL;
+		}
+		delete[m_out_num] m_in_data;
+		m_in_data = NULL;
 	}
 // 	if (m_out_data != NULL) {
 // 		delete[m_out_num] m_out_data;
 // 	}
 }
 
-float* FullConnection::__sigmoid(float* in_data_t) {
-	for (int i = 0; i < m_in_num; i++) {
-		in_data_t[i] = 1 / (1 + exp(-in_data_t[i]));
+float** FullConnection::__sigmoid(float** in_data_t) {
+	for (int i = 0; i < m_batch_num; i++) {
+		for(int j = 0; j<m_out_num;j++)
+		in_data_t[i][j] = 1 / (1 + exp(-in_data_t[i][j]));
 	}
 	return in_data_t;
 }
 
-float* FullConnection::forward(float* in_data_t) {
-	memcpy(m_in_data, in_data_t, m_in_num * sizeof(float));
-	for (int i = 0; i < m_out_num; i++) {
-		for (int j = 0; j < m_in_num; j++) {
-			float test = w[j][i];
-			float test1 = w[j][i] * in_data_t[j];
-			m_out_data[i] = m_out_data[i] += w[j][i] * in_data_t[j];
+float** FullConnection::forward(float** in_data_t) {
+	memcpy(m_in_data, in_data_t, m_in_num * m_batch_num * sizeof(float));
+	for (int i = 0; i < m_batch_num; i++) {
+		for (int j = 0; j < m_out_num; j++) {
+			//float test = w[j][i];
+			//float test1 = w[j][i] * in_data_t[j];
+			for (int h = 0; h < m_in_num; h++) {
+				for (int f = 0; f < m_out_num; f++) {
+					m_out_data[i][j] = m_out_data[i][j] += w[h][f] * in_data_t[i][h];
+				}
+			}
+			m_out_data[i][j] += b[j];
 		}
-		m_out_data[i] += b[i];
 	}
 	__sigmoid(m_out_data);
 	return m_out_data;
 }
 
 float* FullConnection::backward(float* loss_t) {
-	for (int i = 0; i < m_out_num; i++) {
-		m_residual_z[i] = loss_t[i] * m_out_data[i] * (1 - m_out_data[i]);
-		m_grad_b[i] = m_residual_z[i];
-		b[i] -= m_grad_b[i];
-		m_residual_x[i] = 0;
-		for (int j = 0; j < m_in_num; j++) {
-			m_grad_w[i][j] = m_in_data[j] * m_residual_z[i];
-			w[i][j] -= m_grad_w[i][j];
-			//m_residual_x[j] += w[i][j] * m_residual_z[i];
-		}
-	}
+// 	for (int i = 0; i < m_out_num; i++) {
+// 		m_residual_z[i] = loss_t[i] * m_out_data[i] * (1 - m_out_data[i]);
+// 		m_grad_b[i] = m_residual_z[i];
+// 		b[i] -= m_grad_b[i];
+// 		m_residual_x[i] = 0;
+// 		for (int j = 0; j < m_in_num; j++) {
+// 			m_grad_w[i][j] = m_in_data[j] * m_residual_z[i];
+// 			w[i][j] -= m_grad_w[i][j];
+// 			//m_residual_x[j] += w[i][j] * m_residual_z[i];
+// 		}
+// 	}
 
-
+	return NULL;
 
 }
