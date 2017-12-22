@@ -69,11 +69,11 @@ int main()
 		mse = loss.forward(out_data, bench_data, out_num, batch_num);
 		std::cout << "mse = " << mse << ";" << std::endl;
 		loss_data = loss.backward();
-		fc2.forward(loss_data);
+		fc2.backward(loss_data);
 		loss_data = loss.backward();
-		fc1.forward(loss_data);
+		fc1.backward(loss_data);
 		loss_data = loss.backward();
-		fc.forward(loss_data);
+		fc.backward(loss_data);
 		loss_data = loss.backward();
 		run_num++;
 	}

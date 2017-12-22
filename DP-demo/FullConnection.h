@@ -23,6 +23,6 @@ public:
 	~FullConnection();
 
 	double** forward(double** in_data_t);
-	double** backward(double* loss_t);
+	double** backward(double** loss_t);
 };
 
