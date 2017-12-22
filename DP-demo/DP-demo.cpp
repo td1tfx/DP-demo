@@ -52,7 +52,7 @@ int main()
 	int run_num = 0;
 	double** out_data;
 	double** loss_data;
-	while (mse >= 0.001 && run_num < 3) {
+	while (mse >= 0.001 && run_num < 5) {
 		out_data = fc.forward(in_data);
 		out_data = fc1.forward(out_data);
 		out_data = fc2.forward(out_data);
@@ -65,18 +65,31 @@ int main()
 		}
 		std::cout << std::endl;
 
-		//delete in_data;
 		mse = loss.forward(out_data, bench_data, out_num, batch_num);
 		std::cout << "mse = " << mse << ";" << std::endl;
 		loss_data = loss.backward();
-		fc2.backward(loss_data);
-		loss_data = loss.backward();
-		fc1.backward(loss_data);
-		loss_data = loss.backward();
-		fc.backward(loss_data);
-		loss_data = loss.backward();
+		loss_data = fc2.backward(loss_data);
+		loss_data = fc1.backward(loss_data);
+		loss_data = fc.backward(loss_data);
 		run_num++;
 	}
+	if (in_data != NULL) {
+		for (int i = 0; i < batch_num; i++) {
+			delete[] in_data[i];
+			in_data[i] = NULL;
+		}
+		delete[] in_data;
+		in_data = NULL;
+	}
+	if (bench_data != NULL) {
+		for (int i = 0; i < batch_num; i++) {
+			delete[] bench_data[i];
+			bench_data[i] = NULL;
+		}
+		delete[] bench_data;
+		bench_data = NULL;
+	}
+
 	system("pause");
     return 0;
 }

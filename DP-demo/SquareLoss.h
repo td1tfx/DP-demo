@@ -2,7 +2,7 @@
 class SquareLoss
 {
 public:
-	double** loss;
+	double** loss = NULL;
 	int batch_num;
 
 	SquareLoss();

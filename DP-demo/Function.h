@@ -5,7 +5,7 @@ public:
 	Function();
 	~Function();
 
-	Function* instance;
+	Function* instance = NULL;
 	Function* getInstance() {
 		if (instance = NULL) {
 			instance = new Function();

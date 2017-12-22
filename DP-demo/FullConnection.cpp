@@ -56,7 +56,10 @@ FullConnection::FullConnection(int in_num_t, int out_num_t,int batch_num_t, doub
 		}
 	}
 
-	m_grad_b = new double[m_out_num] {0};
+	m_grad_b = new double[m_out_num];
+	for (int i = 0; i < m_out_num; i++) {
+		m_grad_b[i] = 0;
+	}
 	m_grad_w = new double*[in_num_t];
 	for (int i = 0; i < in_num_t; i++) {
 		m_grad_w[i] = new double[out_num_t];
@@ -69,49 +72,62 @@ FullConnection::FullConnection(int in_num_t, int out_num_t,int batch_num_t, doub
 
 FullConnection::~FullConnection()
 {
-// 	if (w != NULL) {
-// 		for (int i = 0; i < m_in_num; i++) {
-// 			delete w[i];
-// 			w[i] = NULL;
-// 		}
-// 		delete[m_in_num] w;
-// 		w = NULL;
-// 	}
-// 	if (m_grad_w != NULL) {
-// 		for (int i = 0; i < m_in_num; i++) {
-// 			delete m_grad_w[i];
-// 			m_grad_w[i] = NULL;
-// 		}
-// 		delete[m_in_num] m_grad_w;
-// 		m_grad_w = NULL;
-// 	}
-// 	if (b != NULL) {
-// 		delete[m_out_num] b;
-// 		b = NULL;
-// 	}
-// 	if (m_grad_b != NULL) {
-// 		delete[m_out_num] m_grad_b;
-// 		m_grad_b = NULL;
-// 	}
-// 	if (m_in_data != NULL) {
-// 		for (int i = 0; i < m_batch_num; i++) {
-// 			delete m_in_data[i];
-// 			m_in_data[i] = NULL;
-// 		}
-// 		delete[m_in_num] m_in_data;
-// 		m_in_data = NULL;
-// 	}
-// 	if (m_residual_z != NULL) {
-// 		for (int i = 0; i < m_batch_num; i++) {
-// 			delete m_residual_z[i];
-// 			m_residual_z[i] = NULL;
-// 		}
-// 		delete[m_out_num] m_in_data;
-// 		m_in_data = NULL;
-// 	}
-// 	if (m_out_data != NULL) {
-// 		delete[m_out_num] m_out_data;
-// 	}
+	if (w != NULL) {
+		for (int i = 0; i < m_in_num; i++) {
+			delete[] w[i];
+			w[i] = NULL;
+		}
+		delete[] w;
+		w = NULL;
+	}
+	if (m_grad_w != NULL) {
+		for (int i = 0; i < m_in_num; i++) {
+			delete[] m_grad_w[i];
+			m_grad_w[i] = NULL;
+		}
+		delete[] m_grad_w;
+		m_grad_w = NULL;
+	}
+	if (b != NULL) {
+		delete[] b;
+		b = NULL;
+	}
+	if (m_grad_b != NULL) {
+		delete[] m_grad_b;
+		m_grad_b = NULL;
+	}
+	if (m_in_data != NULL) {
+		for (int i = 0; i < m_batch_num; i++) {
+			delete[] m_in_data[i];
+			m_in_data[i] = NULL;
+		}
+		delete[] m_in_data;
+		m_in_data = NULL;
+	}
+	if (m_residual_z != NULL) {
+		for (int i = 0; i < m_batch_num; i++) {
+			delete[] m_residual_z[i];
+			m_residual_z[i] = NULL;
+		}
+		delete[] m_residual_z;
+		m_residual_z = NULL;
+	}
+	if (m_residual_x != NULL) {
+		for (int i = 0; i < m_batch_num; i++) {
+			delete[] m_residual_x[i];
+			m_residual_x[i] = NULL;
+		}
+		delete[] m_residual_x;
+		m_residual_x = NULL;
+	}
+	if (m_out_data != NULL) {
+		for (int i = 0; i < m_batch_num; i++) {
+			delete[] m_out_data[i];
+			m_out_data[i] = NULL;
+		}
+		delete[] m_out_data;
+		m_out_data = NULL;
+	}
 }
 
 double** FullConnection::__sigmoid(double** in_data_t) {

@@ -6,14 +6,14 @@ private:
 	int m_out_num;
 	int m_batch_num;
 	double m_lr;
-	double** m_in_data;
-	double** m_out_data;
-	double** w;
-	double** m_grad_w;
-	double* b;
-	double* m_grad_b;
-	double** m_residual_z;
-	double** m_residual_x;
+	double** m_in_data = NULL;
+	double** m_out_data = NULL;
+	double** w = NULL;
+	double** m_grad_w = NULL;
+	double* b = NULL;
+	double* m_grad_b = NULL;
+	double** m_residual_z = NULL;
+	double** m_residual_x = NULL;
 
 	double** __sigmoid(double** in_data_t);
 
