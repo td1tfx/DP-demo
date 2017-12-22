@@ -5,6 +5,7 @@ private:
 	int m_in_num;
 	int m_out_num;
 	int m_batch_num;
+	float m_lr;
 	float** m_in_data;
 	float** m_out_data;
 	float** w;
@@ -22,6 +23,6 @@ public:
 	~FullConnection();
 
 	float** forward(float** in_data_t);
-	float* backward(float* loss_t);
+	float** backward(float* loss_t);
 };
 

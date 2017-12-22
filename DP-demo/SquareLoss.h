@@ -5,10 +5,10 @@ public:
 	float* loss;
 	int batch_num;
 
-	SquareLoss(int batch_num_t);
+	SquareLoss();
 	~SquareLoss();
 	
-	float* forward(float** y, float** t, int out_num);
+	float* forward(float** y, float** t, int out_num, int batch_num_t);
 	float* backward();
 
 };

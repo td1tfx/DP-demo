@@ -46,7 +46,9 @@ int main()
 		std::cout << ";";
 	}
 	std::cout << std::endl;
-	delete in_data;
+
+
+	//delete in_data;
 
 	system("pause");
     return 0;
