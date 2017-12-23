@@ -59,7 +59,7 @@ int main()
 		//forward
 		out_data = fc.forward(in_data);
 		out_data = fc1.forward(out_data);
-		out_data = fc2.forward(out_data);
+/*		out_data = fc2.forward(out_data);*/
 		std::cout << "output:" << std::endl;
 		for (int i = 0; i < batch_num; i++) {
 			for (int j = 0; j < out_num; j++) {
@@ -72,7 +72,7 @@ int main()
 		mse = loss.forward(out_data, bench_data, out_num, batch_num);
 		std::cout << "mse = " << mse << ";" << std::endl;
 		loss_data = loss.backward();
-		loss_data = fc2.backward(loss_data);
+/*		loss_data = fc2.backward(loss_data);*/
 		loss_data = fc1.backward(loss_data);
 		loss_data = fc.backward(loss_data);
 		run_num++;
