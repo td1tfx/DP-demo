@@ -20,11 +20,12 @@ int main()
 
 	int in_num = 3;
 	int out_num = 2;
+	int hidden_num = 4;
 	int batch_num = 3;
 	double lr = 0.1;
-	FullConnection fc(in_num, out_num, batch_num,lr);
-	FullConnection fc1(out_num, out_num, batch_num,lr);
-	FullConnection fc2(out_num, out_num, batch_num,lr);
+	FullConnection fc(in_num, hidden_num, batch_num,lr);
+	FullConnection fc1(hidden_num, hidden_num, batch_num,lr);
+	FullConnection fc2(hidden_num, out_num, batch_num,lr);
 	double** in_data = new double*[batch_num];
 	in_data[0] = new double[in_num] {3, 5, 8};
 	in_data[1] = new double[in_num] {2, 4, 3};

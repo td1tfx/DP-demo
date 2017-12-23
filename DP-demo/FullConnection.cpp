@@ -140,19 +140,20 @@ double** FullConnection::__sigmoid(double** in_data_t) {
 
 double** FullConnection::forward(double** in_data_t) {
 	for (int i = 0; i < m_batch_num; i++) {
-		memcpy(m_in_data[i], in_data_t[i], m_in_num * sizeof(double));
+		for (int j = 0; j < m_in_num; j++) {
+			m_in_data[i][j] = in_data_t[i][j];
+		}
 	}
 
 	for (int i = 0; i < m_batch_num; i++) {
 		for (int j = 0; j < m_out_num; j++) {
 			//double test = w[j][i];
 			//double test1 = w[j][i] * in_data_t[j];
+			m_out_data[i][j] = 0;
 			for (int h = 0; h < m_in_num; h++) {
-				for (int f = 0; f < m_out_num; f++) {
-					m_out_data[i][j] = m_out_data[i][j] += w[h][f] * in_data_t[i][h];
-				}
+				m_out_data[i][j] += in_data_t[i][h] * w[h][j];
 			}
-			m_out_data[i][j] += b[j];
+			double test1 = m_out_data[i][j] += b[j];
 		}
 	}
 	__sigmoid(m_out_data);
@@ -168,14 +169,14 @@ double** FullConnection::backward(double** loss_t) {
 		}
 	}
 	for (int i = 0; i < m_in_num; i++) {
-		for (int j = 0; j < m_out_num; j++) {
-			m_grad_w[i][j] = 0;
+		for (int h = 0; h < m_out_num; h++) {
+			m_grad_w[i][h] = 0;
 		}
 	}
 	for (int i = 0; i < m_in_num; i++) {
 		for (int h = 0; h < m_out_num; h++) {
 			for (int j = 0; j < m_batch_num; j++) {
-				m_grad_w[i][h] += m_in_data[i][j] * m_residual_z[j][h];
+				m_grad_w[i][h] += m_in_data[j][i] * m_residual_z[j][h];
 			}
 		}
 	}

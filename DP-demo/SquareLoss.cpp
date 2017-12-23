@@ -10,7 +10,14 @@ SquareLoss::SquareLoss()
 
 SquareLoss::~SquareLoss()
 {
-
+	if (loss != NULL) {
+		for (int i = 0; i < batch_num; i++) {
+			delete[] loss[i];
+			loss[i] = NULL;
+		}
+		delete[] loss;
+		loss = NULL;
+	}
 }
 
 double SquareLoss::forward(double** y, double** t, int out_num, int batch_num_t) {
